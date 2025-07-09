@@ -13,12 +13,14 @@ app.post("/proxy", async (req, res) => {
         "Content-Type": "application/json"
       }
     });
-    res.status(response.status).json(response.data);
-  } catch (e) {
-    console.error("Proxy error:", e.response?.data || e.message);
-    res.status(e.response?.status || 500).json({ error: e.response?.data || e.message });
+    res.json(response.data);
+  } catch (error) {
+    console.error("Erreur proxy :", error.message);
+    res.status(500).send("Erreur serveur");
   }
 });
 
-const port = process.env.PORT || 3000;
-app.listen(port, () => console.log(`Proxy actif sur le port ${port}`));
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`Proxy actif sur le port ${PORT}`);
+});
