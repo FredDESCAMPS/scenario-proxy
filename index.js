@@ -1,18 +1,18 @@
 const express = require("express");
+const cors = require("cors");
 const axios = require("axios");
 require("dotenv").config();
 
 const app = express();
-const port = process.env.PORT || 3000;
+const port = process.env.PORT || 8080; // ← ici, on écoute le port 8080 ou celui donné par Railway
 
+app.use(cors());
 app.use(express.json());
 
 app.post("/proxy", async (req, res) => {
   try {
-    console.log("Requête reçue :", req.body);
-
     const response = await axios.post(
-      "https://api.cloud.scenario.com/v1/generate/video", // <-- Le bon endpoint
+      "https://api.cloud.scenario.com/v1/generation",
       req.body,
       {
         headers: {
@@ -21,14 +21,16 @@ app.post("/proxy", async (req, res) => {
         },
       }
     );
-
-    console.log("Réponse reçue de Scenario ✅", response.data);
     res.json(response.data);
-
   } catch (error) {
-    console.error("Erreur proxy :", error.response?.data || error.message);
-    res.status(error.response?.status || 500).json({ error: error.response?.data || error.message });
+    console.error("Erreur proxy :", error?.response?.data || error.message);
+    res.status(500).json({
+      error: "Erreur lors de la requête vers l'API Scenario",
+      details: error?.response?.data || error.message,
+    });
   }
 });
 
-app.listen(port, () => console.log(`Proxy actif sur le port ${port}`));
+app.listen(port, () => {
+  console.log(`Proxy actif sur le port ${port}`);
+});
