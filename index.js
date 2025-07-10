@@ -13,7 +13,7 @@ app.post('/proxy', async (req, res) => {
   try {
     const headers = {
       'Content-Type': 'application/json',
-      'Scenario-Api-Key': process.env.SCENARIO_API_KEY // ✅ C'EST COMME ÇA QUE L'API SCENARIO ATTEND LA CLÉ
+      'Scenario-Api-Key': process.env.SCENARIO_API_KEY  // ✅ C'est la clé correcte attendue par Scenario
     };
 
     console.log("🟢 Requête vers Scenario avec headers:", headers);
