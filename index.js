@@ -11,18 +11,23 @@ app.use(express.json());
 
 app.post('/proxy', async (req, res) => {
   try {
+    const apiKey = process.env.SCENARIO_API_KEY;
+
+    if (!apiKey) {
+      throw new Error('❌ Clé API absente dans les variables d\'environnement.');
+    }
+
     const headers = {
-  'Content-Type': 'application/json',
-  'Authorization': `Bearer ${process.env.SCENARIO_API_KEY}`
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${apiKey}`
     };
 
-    console.log("🟢 Requête vers Scenario avec headers:", headers);
+    console.log("🔐 Clé API utilisée:", apiKey);
+    console.log("🟢 Headers envoyés :", headers);
     console.log("📦 Corps de la requête:", req.body);
-    console.log("🔐 Clé API utilisée:", process.env.SCENARIO_API_KEY);
 
-    console.log("🟢 Headers envoyés dans axios :", JSON.stringify(headers));
     const response = await axios.post(
-      'https://api.cloud.scenario.com/v1/generation/video',
+      'https://api.cloud.scenario.com/v1/generation',
       req.body,
       { headers }
     );
@@ -38,5 +43,5 @@ app.post('/proxy', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log(`✅ Proxy actif sur le port ${port}`);
+  console.log("✅ Proxy actif sur le port " + port);
 });
