@@ -1,3 +1,4 @@
+// ✅ Proxy Scenario avec authentification Basic Auth (clé + secret)
 const express = require('express');
 const cors = require('cors');
 const axios = require('axios');
@@ -11,20 +12,20 @@ app.use(express.json());
 
 app.post('/proxy', async (req, res) => {
   try {
-    const apiKey = process.env.SCENARIO_API_KEY;
-
-    if (!apiKey) {
-      throw new Error('❌ Clé API absente dans les variables d\'environnement.');
-    }
+    // 🔐 Encodage Basic Auth : API_KEY:API_SECRET
+    const authString = Buffer.from(
+      `${process.env.SCENARIO_API_KEY}:${process.env.SCENARIO_API_SECRET}`
+    ).toString('base64');
 
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
+      'Authorization': `Basic ${authString}`
     };
 
-    console.log("🔐 Clé API utilisée:", apiKey);
-    console.log("🟢 Headers envoyés :", headers);
+    console.log("🟢 Requête vers Scenario avec headers:", headers);
     console.log("📦 Corps de la requête:", req.body);
+    console.log("🔐 API Key:", process.env.SCENARIO_API_KEY);
+    console.log("🔐 API Secret (taille):", process.env.SCENARIO_API_SECRET.length);
 
     const response = await axios.post(
       'https://api.cloud.scenario.com/v1/generation',
@@ -34,7 +35,7 @@ app.post('/proxy', async (req, res) => {
 
     res.status(response.status).json(response.data);
   } catch (error) {
-    console.error("❌ Erreur proxy :", error.response?.data || error.message);
+    console.error("❌ Erreur proxy:", error.response?.data || error.message);
     res.status(500).json({
       error: 'Erreur lors de la requête vers l\'API Scenario',
       details: error.response?.data || error.message
