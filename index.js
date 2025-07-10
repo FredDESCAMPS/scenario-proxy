@@ -11,18 +11,21 @@ app.use(express.json());
 
 app.post('/proxy', async (req, res) => {
   try {
+    const apiKey = process.env.SCENARIO_API_KEY;
+
+    if (!apiKey) {
+      console.error("❗ La variable SCENARIO_API_KEY est introuvable !");
+      return res.status(500).json({ error: "Clé API manquante côté serveur." });
+    }
+
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${process.env.SCENARIO_API_KEY}`,
-      'Scenario-Api-Key': process.env.SCENARIO_API_KEY
+      'Authorization': `Bearer ${apiKey}`
     };
-    if (!process.env.SCENARIO_API_KEY) {
-  console.error("❗ La variable SCENARIO_API_KEY est introuvable !");
-}
+
     console.log("🟢 Requête vers Scenario avec headers:", headers);
     console.log("📦 Corps de la requête:", req.body);
-    console.log("🔐 Clé API utilisée:", process.env.SCENARIO_API_KEY);
-    console.log("🔍 Header Authorization envoyé:", headers['Authorization']);
+    console.log("🔐 Clé API utilisée:", apiKey);
 
     const response = await axios.post(
       'https://api.cloud.scenario.com/v1/generation',
@@ -41,5 +44,5 @@ app.post('/proxy', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log("Proxy actif sur le port " + port);
+  console.log("✅ Proxy actif sur le port " + port);
 });
