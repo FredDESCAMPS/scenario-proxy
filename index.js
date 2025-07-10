@@ -15,9 +15,9 @@ app.post('/proxy', async (req, res) => {
 
     if (!apiKey) {
       console.error("❗ La variable SCENARIO_API_KEY est introuvable !");
-      return res.status(500).json({ error: "Clé API manquante côté serveur." });
+      return res.status(500).json({ error: 'Missing SCENARIO_API_KEY in environment' });
     }
-
+try {
     const headers = {
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${apiKey}`
@@ -35,7 +35,7 @@ app.post('/proxy', async (req, res) => {
 
     res.status(response.status).json(response.data);
   } catch (error) {
-    console.error("❌ Erreur proxy :", error.response?.data || error.message);
+     console.error('❌ Erreur lors de la requête vers Scenario :', error.response?.data || error.message);
     res.status(500).json({
       error: 'Erreur lors de la requête vers l\'API Scenario',
       details: error.response?.data || error.message
@@ -44,5 +44,5 @@ app.post('/proxy', async (req, res) => {
 });
 
 app.listen(port, () => {
-  console.log("✅ Proxy actif sur le port " + port);
+  console.log(`✅ Proxy actif sur le port ${port}`);
 });
