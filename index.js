@@ -11,21 +11,14 @@ app.use(express.json());
 
 app.post('/proxy', async (req, res) => {
   try {
-    const apiKey = process.env.SCENARIO_API_KEY;
-
-    if (!apiKey) {
-      console.error("❗ La variable SCENARIO_API_KEY est introuvable !");
-      return res.status(500).json({ error: 'Missing SCENARIO_API_KEY in environment' });
-    }
-try {
     const headers = {
       'Content-Type': 'application/json',
-      'Authorization': `Bearer ${apiKey}`
+      'Authorization': `Bearer ${process.env.SCENARIO_API_KEY}`
     };
 
     console.log("🟢 Requête vers Scenario avec headers:", headers);
     console.log("📦 Corps de la requête:", req.body);
-    console.log("🔐 Clé API utilisée:", apiKey);
+    console.log("🔐 Clé API utilisée:", process.env.SCENARIO_API_KEY);
 
     const response = await axios.post(
       'https://api.cloud.scenario.com/v1/generation',
@@ -35,13 +28,14 @@ try {
 
     res.status(response.status).json(response.data);
   } catch (error) {
-     console.error('❌ Erreur lors de la requête vers Scenario :', error.response?.data || error.message);
+    console.error("❌ Erreur proxy :", error.response?.data || error.message);
     res.status(500).json({
       error: 'Erreur lors de la requête vers l\'API Scenario',
       details: error.response?.data || error.message
     });
   }
 });
+
 app.listen(port, () => {
   console.log(`✅ Proxy actif sur le port ${port}`);
 });
