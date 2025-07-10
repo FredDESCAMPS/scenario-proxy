@@ -13,12 +13,12 @@ app.post('/proxy', async (req, res) => {
   try {
     const headers = {
       'Content-Type': 'application/json',
-      'Scenario-Api-Key': process.env.SCENARIO_API_KEY`
+      'Scenario-Api-Key': process.env.SCENARIO_API_KEY
     };
 
     console.log("🟢 Requête vers Scenario avec headers:", headers);
     console.log("📦 Corps de la requête:", req.body);
-console.log("🔐 Clé API utilisée:", process.env.SCENARIO_API_KEY);
+    console.log("🔐 Clé API utilisée:", process.env.SCENARIO_API_KEY);
 
     const response = await axios.post(
       'https://api.cloud.scenario.com/v1/generation',
