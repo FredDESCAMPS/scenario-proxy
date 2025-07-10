@@ -16,7 +16,9 @@ app.post('/proxy', async (req, res) => {
       'Authorization': `Bearer ${process.env.SCENARIO_API_KEY}`,
       'Scenario-Api-Key': process.env.SCENARIO_API_KEY
     };
-
+    if (!process.env.SCENARIO_API_KEY) {
+  console.error("❗ La variable SCENARIO_API_KEY est introuvable !");
+}
     console.log("🟢 Requête vers Scenario avec headers:", headers);
     console.log("📦 Corps de la requête:", req.body);
     console.log("🔐 Clé API utilisée:", process.env.SCENARIO_API_KEY);
