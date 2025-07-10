@@ -37,5 +37,5 @@ console.log("🔐 Clé API utilisée:", process.env.SCENARIO_API_KEY);
 });
 
 app.listen(port, () => {
-  console.log(`✅ Proxy actif sur le port ${port}`);
+  console.log("Proxy actif sur le port " + port);
 });
