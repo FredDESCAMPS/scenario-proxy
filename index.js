@@ -21,7 +21,7 @@ app.post('/proxy', async (req, res) => {
     console.log("🔐 Clé API utilisée:", process.env.SCENARIO_API_KEY);
 
     const response = await axios.post(
-      'https://api.cloud.scenario.com/v1/assets',
+      'https://api.cloud.scenario.com/v1/generation/video',
       req.body,
       { headers }
     );
